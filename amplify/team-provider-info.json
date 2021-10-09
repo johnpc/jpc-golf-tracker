@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-jpcgolftracker-dev-164555-authRole",
+      "UnauthRoleArn": "arn:aws:iam::566092841021:role/amplify-jpcgolftracker-dev-164555-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::566092841021:role/amplify-jpcgolftracker-dev-164555-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-jpcgolftracker-dev-164555-deployment",
+      "UnauthRoleName": "amplify-jpcgolftracker-dev-164555-unauthRole",
+      "StackName": "amplify-jpcgolftracker-dev-164555",
+      "StackId": "arn:aws:cloudformation:us-east-1:566092841021:stack/amplify-jpcgolftracker-dev-164555/e7e74830-2941-11ec-bdb2-0a12c2db08f1",
+      "AmplifyAppId": "d3ojwzzc8u76o6"
+    },
+    "categories": {
+      "auth": {
+        "jpcgolftrackerc7dceef6": {}
+      }
+    }
+  }
+}
