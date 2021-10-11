@@ -117,15 +117,17 @@ const Round = (props) => {
         disabled={submitDisabled}
         onClick={async () => {
           setSubmitDisabled(true);
+
           const strokes = await listStrokes();
           const prevStroke = strokes.find(
             (stroke) =>
-              stroke.hole_id === hole.id &&
-              Date.parse(stroke.date) > Date.now() - 3600 &&
-              (stroke.shot_number === strokeNumber - 1 ||
-                (stroke.shot_number === strokeNumber - 2 &&
+              stroke.hole.id === hole.id &&
+              Date.parse(stroke.date) > Date.now() - 3600 * 1000 &&
+              (stroke.shot_number === strokeNumber ||
+                (stroke.shot_number === strokeNumber - 1 &&
                   stroke.fate === "LOST"))
           );
+
           // validate that all necessary stroke metadata is present
           if (
             (prevStroke &&
