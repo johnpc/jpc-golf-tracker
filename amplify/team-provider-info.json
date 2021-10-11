@@ -14,6 +14,12 @@
     "categories": {
       "auth": {
         "jpcgolftrackerc7dceef6": {}
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d3ojwzzc8u76o6",
+          "type": "cicd"
+        }
       }
     }
   }

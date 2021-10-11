@@ -1,0 +1,7 @@
+{
+  "name": "jpcgolftracker",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}

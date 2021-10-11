@@ -1,0 +1,8 @@
+{
+  "appId": "io.ionic.jpcgolftracker",
+  "appName": "jpcgolftracker",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "build",
+  "cordova": {}
+}
