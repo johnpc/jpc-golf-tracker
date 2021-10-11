@@ -33,8 +33,10 @@ const EndTab = (props) => {
             props.cb(calculateFeet(unit, e.target.value));
           }}
           style={{width: "50%"}}
-          defaultValue="0"
           type="number"
+          min={0}
+          keyboardType="number-pad"
+          inputmode="numeric"
         />
       </Input.Group>
     </div>

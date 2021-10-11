@@ -1,4 +1,4 @@
-import {Input, Select} from "antd";
+import {Input, InputNumber, Select} from "antd";
 import {useState} from "react";
 const {Option} = Select;
 
@@ -15,7 +15,7 @@ const StartTab = (props) => {
   const [value, setValue] = useState(0);
   return (
     <div>
-      How far away are you?
+      How far away are you??
       <Input.Group compact>
         <Select
           onChange={(option) => {
@@ -27,14 +27,16 @@ const StartTab = (props) => {
           <Option value="Feet">Feet</Option>
           <Option value="Yards">Yards</Option>
         </Select>
-        <Input
+        <InputNumber
           onChange={(e) => {
             setValue(e.target.value);
             props.cb(calculateFeet(unit, e.target.value));
           }}
           style={{width: "50%"}}
-          defaultValue="0"
           type="number"
+          min={1}
+          keyboardType="number-pad"
+          inputmode="numeric"
         />
       </Input.Group>
     </div>

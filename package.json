@@ -23,6 +23,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "ios": "ionic capacitor sync && npx cap open ios",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
