@@ -197,6 +197,8 @@ const Round = (props) => {
                         : {};
                       if (["GIMMIE", "GREEN", "FRINGE"].includes(fate)) {
                         setEndDistanceUnit("feet");
+                      } else {
+                        setEndDistanceUnit("yards");
                       }
                       setStrokeMeta({
                         ...strokeMetaData,
@@ -235,7 +237,7 @@ const Round = (props) => {
                       setSelectedTags(allTags);
                       setStrokeMeta({
                         ...strokeMetaData,
-                        allTags,
+                        tags: allTags,
                       });
                     }}
                   >
@@ -287,7 +289,7 @@ const Round = (props) => {
           setSubmitDisabled(true);
 
           const strokes = await listStrokes();
-          const prevStroke = strokes.find(
+          const prevStroke = strokes.sort((a, b) => Date.parse(a.date) > Date.parse(b.date) ? -1 : 1).find(
             (stroke) =>
               stroke.hole.id === hole.id &&
               Date.parse(stroke.date) > Date.now() - 3600 * 1000 &&
@@ -307,6 +309,15 @@ const Round = (props) => {
             !strokeMetaData.fate ||
             !strokeMetaData.club
           ) {
+            console.log(
+              prevStroke,
+              prevStroke &&
+                prevStroke.end_flag_distance !== strokeMetaData.startDistance,
+              isNaN(strokeMetaData.endDistance),
+              !strokeMetaData.startDistance,
+              !strokeMetaData.fate,
+              !strokeMetaData.club
+            );
             sweetAlert.fire({
               title: "Error!",
               text: "You haven't filled in the form all the way!",
@@ -372,7 +383,7 @@ const Round = (props) => {
           setStartDistanceUnit(endDistanceUnit);
           setStartDistanceValue(endDistanceValue);
           setStrokeMeta({
-            club: ["GIMMIE", "GREEN", "FRINGE"].includes(prevFate)
+            club: ["GREEN", "FRINGE"].includes(prevFate)
               ? "PUTTER"
               : null,
             startDistance: strokeMetaData.endDistance,
@@ -384,12 +395,18 @@ const Round = (props) => {
           setSelectedClub(null);
           setSelectedTags([]);
           setEndDistanceValue(null);
-          if (["GIMMIE", "GREEN", "FRINGE"].includes(prevFate)) {
+          if (["GREEN", "FRINGE"].includes(prevFate)) {
             setSelectedClub("PUTTER");
             setEndDistanceUnit("feet");
             setActiveTabKey("3");
+          } else if (['GIMMIE', 'HOLED'].includes(prevFate)){
+            setActiveTabKey("1");
+            setStartDistanceUnit("yards");
+            setEndDistanceUnit("yards");
           } else {
             setActiveTabKey("2");
+            setStartDistanceUnit("yards");
+            setEndDistanceUnit("yards");
           }
           setSubmitDisabled(false);
         }}
