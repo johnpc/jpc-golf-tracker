@@ -9,7 +9,7 @@ const style = {
   fontFamily: "monospace",
 };
 const ClubButton = (props) => {
-  const [selected, setSelected] = useState(false);
+  const [selected, setSelected] = useState(props.selected);
   useEffect(() => {
     async function setupState() {
       const bag = await getBag();
@@ -21,7 +21,7 @@ const ClubButton = (props) => {
   }, [props.clubType, props.skipAutoselect]);
   return (
     <Button
-      style={selected ? {...style, backgroundColor: "blue"} : style}
+      style={selected || props.selected ? {...style, backgroundColor: "blue"} : style}
       onClick={() => props.onClick(selected, setSelected)}
     >
       {clubs[props.clubType]}

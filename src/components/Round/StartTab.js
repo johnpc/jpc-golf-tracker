@@ -15,7 +15,7 @@ const StartTab = (props) => {
   const [value, setValue] = useState(0);
   return (
     <div>
-      How far away are you??
+      How far away are you?
       <Input.Group compact>
         <Select
           onChange={(option) => {
