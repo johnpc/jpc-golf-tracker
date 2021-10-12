@@ -43,6 +43,8 @@ enum Tag {
   LAYUP
   HAPPY
   SAD
+  MORE_BREAK_THAN_EXPECTED
+  LESS_BREAK_THAN_EXPECTED
 }
 
 enum Fate {

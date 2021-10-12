@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {withRouter} from "react-router";
 import {Button, Tabs} from "antd";
 import getBag from "../data/getBag";
@@ -34,6 +34,8 @@ const tagMap = {
   LAYUP: "LAYUP",
   HAPPY: "HAPPY",
   SAD: "SAD",
+  MORE_BREAK_THAN_EXPECTED: "MORE_BREAK_THAN_EXPECTED",
+  LESS_BREAK_THAN_EXPECTED: "LESS_BREAK_THAN_EXPECTED",
 };
 
 const fates = {
@@ -51,6 +53,19 @@ const fates = {
   BUNKER: "BUNKER",
   FRINGE: "FRINGE",
 };
+
+const putterFates = ["HOLED", "GIMMIE", "GREEN", "FRINGE"];
+const putterTags = [
+  "HAPPY",
+  "SAD",
+  "SHORT",
+  "LONG",
+  "PUSH",
+  "PULL",
+  "STRAIGHT",
+  "MORE_BREAK_THAN_EXPECTED",
+  "LESS_BREAK_THAN_EXPECTED",
+];
 
 const calculateFeet = (unit, value) => {
   if (unit.toLowerCase() === "feet") {
@@ -160,56 +175,74 @@ const Round = (props) => {
         </TabPane>
         <TabPane tab="Fate" key="3">
           <div>
-            {Object.values(fates).map((fate) => {
-              return (
-                <Button
-                  key={fate}
-                  type={fate === selectedFate ? "primary" : "default"}
-                  onClick={() => {
-                    setSelectedFate(fate);
-                    const fateExtras = ["HOLED", "GIMMIE"].includes(fate)
-                      ? {
-                          endDistance: 0,
-                        }
-                      : {};
-                    if (["GIMMIE", "GREEN", "FRINGE"].includes(fate)) {
-                      setEndDistanceUnit("feet");
-                    }
-                    setStrokeMeta({
-                      ...strokeMetaData,
-                      ...fateExtras,
-                      fate,
-                    });
-                  }}
-                >
-                  {fate}
-                </Button>
-              );
-            })}
+            {Object.values(fates)
+              .filter((fate) => {
+                if (selectedClub === "PUTTER") {
+                  return putterFates.includes(fate);
+                } else {
+                  return true;
+                }
+              })
+              .map((fate) => {
+                return (
+                  <Button
+                    key={fate}
+                    type={fate === selectedFate ? "primary" : "default"}
+                    onClick={() => {
+                      setSelectedFate(fate);
+                      const fateExtras = ["HOLED", "GIMMIE"].includes(fate)
+                        ? {
+                            endDistance: 0,
+                          }
+                        : {};
+                      if (["GIMMIE", "GREEN", "FRINGE"].includes(fate)) {
+                        setEndDistanceUnit("feet");
+                      }
+                      setStrokeMeta({
+                        ...strokeMetaData,
+                        ...fateExtras,
+                        fate,
+                      });
+                    }}
+                  >
+                    {fate}
+                  </Button>
+                );
+              })}
           </div>
         </TabPane>
         <TabPane tab="Tag" key="4">
           <div>
-            {Object.values(tagMap).map((tag) => {
-              return (
-                <Button
-                  key={tag}
-                  style={
-                    selectedTags.includes(tag) ? {backgroundColor: "blue"} : {}
-                  }
-                  onClick={() => {
-                    const allTags = [tag, ...selectedTags];
-                    setSelectedTags(allTags);
-                    setStrokeMeta({
-                      ...strokeMetaData,
-                      allTags,
-                    });
-                  }}
-                >
-                  {tag}
-                </Button>
-              );
-            })}
+            {Object.values(tagMap)
+              .filter((tag) => {
+                if (selectedClub === "PUTTER") {
+                  return putterTags.includes(tag);
+                } else {
+                  return true;
+                }
+              })
+              .map((tag) => {
+                return (
+                  <Button
+                    key={tag}
+                    style={
+                      selectedTags.includes(tag)
+                        ? {backgroundColor: "blue"}
+                        : {}
+                    }
+                    onClick={() => {
+                      const allTags = [tag, ...selectedTags];
+                      setSelectedTags(allTags);
+                      setStrokeMeta({
+                        ...strokeMetaData,
+                        allTags,
+                      });
+                    }}
+                  >
+                    {tag}
+                  </Button>
+                );
+              })}
           </div>
         </TabPane>
         <TabPane tab="End" key="5">
@@ -339,7 +372,9 @@ const Round = (props) => {
           setStartDistanceUnit(endDistanceUnit);
           setStartDistanceValue(endDistanceValue);
           setStrokeMeta({
-            club: null,
+            club: ["GIMMIE", "GREEN", "FRINGE"].includes(prevFate)
+              ? "PUTTER"
+              : null,
             startDistance: strokeMetaData.endDistance,
             endDistance: null,
             fate: null,
@@ -349,10 +384,12 @@ const Round = (props) => {
           setSelectedClub(null);
           setSelectedTags([]);
           setEndDistanceValue(null);
-          setActiveTabKey("2");
           if (["GIMMIE", "GREEN", "FRINGE"].includes(prevFate)) {
             setSelectedClub("PUTTER");
             setEndDistanceUnit("feet");
+            setActiveTabKey("3");
+          } else {
+            setActiveTabKey("2");
           }
           setSubmitDisabled(false);
         }}
