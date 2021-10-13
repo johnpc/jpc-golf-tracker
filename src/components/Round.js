@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useRef} from "react";
 import {withRouter} from "react-router";
 import {Button, Tabs} from "antd";
 import getBag from "../data/getBag";
@@ -84,13 +84,18 @@ const Round = (props) => {
   const [bag, setBag] = useState(null);
   const [submitDisabled, setSubmitDisabled] = useState(false);
   const [startDistanceUnit, setStartDistanceUnit] = useState("yards");
-  const [startDistanceValue, setStartDistanceValue] = useState(0);
+  const [startDistanceValue, setStartDistanceValue] = useState(null);
   const [endDistanceUnit, setEndDistanceUnit] = useState("yards");
-  const [endDistanceValue, setEndDistanceValue] = useState(0);
+  const [endDistanceValue, setEndDistanceValue] = useState(null);
   const [selectedClub, setSelectedClub] = useState(null);
   const [selectedFate, setSelectedFate] = useState(null);
   const [selectedTags, setSelectedTags] = useState([]);
   const [activeTabKey, setActiveTabKey] = useState("1");
+  const startDistanceInputRef = useRef(null);
+  const endDistanceInputRef = useRef(null);
+  if (startDistanceInputRef.current) {
+    startDistanceInputRef.current.focus();
+  }
 
   async function setupState() {
     const bag = await getBag();
@@ -115,6 +120,16 @@ const Round = (props) => {
       <Tabs
         type="card"
         activeKey={activeTabKey}
+        onChange={(tabKey) => {
+          setTimeout(() => {
+            if (tabKey === "1") {
+              startDistanceInputRef.current.focus();
+            }
+            if (tabKey === "5") {
+              endDistanceInputRef.current.focus();
+            }
+          }, 0)
+        }}
         onTabClick={(tabKey) => {
           setActiveTabKey(tabKey);
         }}
@@ -138,6 +153,8 @@ const Round = (props) => {
                 <Option value="Yards">Yards</Option>
               </Select>
               <InputNumber
+                autoFocus
+                ref={startDistanceInputRef}
                 value={startDistanceValue}
                 onChange={(value) => {
                   setStartDistanceValue(value);
@@ -266,6 +283,7 @@ const Round = (props) => {
                 <Option value="Yards">Yards</Option>
               </Select>
               <InputNumber
+                ref={endDistanceInputRef}
                 value={endDistanceValue}
                 onChange={(value) => {
                   setEndDistanceValue(value);
@@ -289,14 +307,16 @@ const Round = (props) => {
           setSubmitDisabled(true);
 
           const strokes = await listStrokes();
-          const prevStroke = strokes.sort((a, b) => Date.parse(a.date) > Date.parse(b.date) ? -1 : 1).find(
-            (stroke) =>
-              stroke.hole.id === hole.id &&
-              Date.parse(stroke.date) > Date.now() - 3600 * 1000 &&
-              (stroke.shot_number === strokeNumber ||
-                (stroke.shot_number === strokeNumber - 1 &&
-                  stroke.fate === "LOST"))
-          );
+          const prevStroke = strokes
+            .sort((a, b) => (Date.parse(a.date) > Date.parse(b.date) ? -1 : 1))
+            .find(
+              (stroke) =>
+                stroke.hole.id === hole.id &&
+                Date.parse(stroke.date) > Date.now() - 3600 * 1000 &&
+                (stroke.shot_number === strokeNumber ||
+                  (stroke.shot_number === strokeNumber - 1 &&
+                    stroke.fate === "LOST"))
+            );
 
           console.log("strokeMetaData", strokeMetaData);
 
@@ -383,9 +403,7 @@ const Round = (props) => {
           setStartDistanceUnit(endDistanceUnit);
           setStartDistanceValue(endDistanceValue);
           setStrokeMeta({
-            club: ["GREEN", "FRINGE"].includes(prevFate)
-              ? "PUTTER"
-              : null,
+            club: ["GREEN", "FRINGE"].includes(prevFate) ? "PUTTER" : null,
             startDistance: strokeMetaData.endDistance,
             endDistance: null,
             fate: null,
@@ -399,7 +417,7 @@ const Round = (props) => {
             setSelectedClub("PUTTER");
             setEndDistanceUnit("feet");
             setActiveTabKey("3");
-          } else if (['GIMMIE', 'HOLED'].includes(prevFate)){
+          } else if (["GIMMIE", "HOLED"].includes(prevFate)) {
             setActiveTabKey("1");
             setStartDistanceUnit("yards");
             setEndDistanceUnit("yards");
