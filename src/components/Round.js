@@ -394,6 +394,17 @@ const Round = (props) => {
                   </div>
                 ),
               });
+            } else {
+              sweetAlert.fire({
+                title: "Hole complete!",
+                text: `You've scored a ${strokeNumber + 1} on a par ${hole.par}!`,
+                icon: "success",
+                confirmButtonText: (
+                  <div>
+                      Next hole!
+                  </div>
+                ),
+              });
             }
             setHole(nextHole);
           }
